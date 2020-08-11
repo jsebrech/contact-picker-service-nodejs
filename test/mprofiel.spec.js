@@ -1,27 +1,31 @@
 const proxyquire = require('proxyquire');
 
-describe('mprofielAdmin', () => {
+describe('mprofiel', () => {
 
     // a mock function that simulates authenticatedOAuth2 from lib/auth
-    const oauthPassThrough = 
+    const oauthPassThrough =
         (config, request) => (...args) => { return request(null, ...args); }
 
-    const dummyResult = { 
-        data: [ {
-            id: '0',
-            firstName: 'Foo',
-            lastName: 'Bar'
-        }, {
-            id: '1',
-            firstName: 'Foo',
-            lastName: 'Baz'  
-        } ]
+    const dummyResult = {
+        _embedded: {
+            profiles: [ {
+                id: '0',
+                firstName: 'Foo',
+                fullName: 'Foo Bar',
+                lastName: 'Bar'
+            }, {
+                id: '1',
+                firstName: 'Foo',
+                fullName: 'Foo Baz',
+                lastName: 'Baz'
+            } ]
+        }
     };
 
     describe('createService', () => {
 
         it('should attempt to authenticate first', (done) => {
-            const createService = proxyquire('../dist/mprofiel-admin/service', { 
+            const createService = proxyquire('../dist/mprofiel/service', {
                 '../auth': {
                     authenticatedOAuth2: (config, request) => () => { done(); }
                 }
@@ -34,7 +38,7 @@ describe('mprofielAdmin', () => {
             let byFirstName = false;
             let byLastName = true;
             const query = 'foo';
-            const createService = proxyquire('../dist/mprofiel-admin/service', {
+            const createService = proxyquire('../dist/mprofiel/service', {
                 '../auth': { authenticatedOAuth2: oauthPassThrough },
                 'request-promise': {
                     get: (url, config) => {
@@ -65,7 +69,7 @@ describe('mprofielAdmin', () => {
         });
 
         it('should return an empty array when not given a search query', (done) => {
-            const createService = proxyquire('../dist/mprofiel-admin/service', { 
+            const createService = proxyquire('../dist/mprofiel/service', {
                 '../auth': { authenticatedOAuth2: oauthPassThrough }
             });
             const fn = createService({});
@@ -75,22 +79,22 @@ describe('mprofielAdmin', () => {
                 done();
             });
         });
-        
+
     });
 
     describe('createController', () => {
         it('should call the service and output json', (done) => {
-            const createController = proxyquire('../dist/mprofiel-admin/controller', {
+            const createController = proxyquire('../dist/mprofiel/controller', {
                 './service': () => (search) => {
                     expect(search).toEqual('test');
                     return Promise.resolve(dummyResult);
                 }
             });
             const controller = createController({});
-            controller({ query: { search: 'test' } }, { json: (result) => { 
+            controller({ query: { search: 'test' } }, { json: (result) => {
                 expect(result).toEqual(dummyResult);
-                done(); 
-            } }, () => {} ); 
+                done();
+            } }, () => {} );
         });
     });
 });

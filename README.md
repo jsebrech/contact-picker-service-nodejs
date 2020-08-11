@@ -24,11 +24,11 @@ Express example:
 const express = require('express');
 const app = express()
 const pickerHelper = require('@acpaas-ui-widgets/nodejs-contact-picker');
-const controller = pickerHelper.mprofielAdmin.createController({
+const controller = pickerHelper.mprofiel.createController({
     clientId: "<oauth client id>",
     clientSecret: "<oauth client secret>",
-    oauthUrl: "https://api-gw-o.antwerpen.be/astad/mprofieladmin/v1/oauth2/token",
-    serviceUrl: "https://api-gw-o.antwerpen.be/astad/mprofieladmin/v1/api/mprofiel"
+    oauthUrl: "https://api-gw-o.antwerpen.be/astad/mprofiel/v1/oauth2/token",
+    serviceUrl: "https://api-gw-o.antwerpen.be/astad/mprofiel/v1/api/mprofiel"
 });
 app.get('/api/medewerkers', controller);
 app.listen(3000);
@@ -38,9 +38,9 @@ You can obtain the OAuth credentials by taking a contract on the API in the [API
 
 The library provides the following interface:
 
-- mprofielAdmin
-  - *createController(config)*: create an express controller that handles the connection to the mprofiel-admin API
-  - *createService(config)*: create a function that accepts a query and returns a promise of the results of the mprofiel-admin API for that query. The createController routine builds on top of this.
+- mprofiel
+  - *createController(config)*: create an express controller that handles the connection to the mprofiel API
+  - *createService(config)*: create a function that accepts a query and returns a promise of the results of the mprofiel API for that query. The createController routine builds on top of this.
 
 ## Run the demo app
 
@@ -50,11 +50,13 @@ Create a .env file containing:
 PORT=3000
 OAUTH_CLIENT_ID=<client id>
 OAUTH_CLIENT_SECRET=<client secret>
-MPROFIEL_ADMIN_OAUTH_URL=https://api-gw-o.antwerpen.be/astad/mprofieladmin/v1/oauth2/token
-MPROFIEL_ADMIN_API_URL=https://api-gw-o.antwerpen.be/astad/mprofieladmin/v1/api/mprofiel
+MPROFIEL_OAUTH_URL=https://api-gw-o.antwerpen.be/astad/mprofiel/v1/oauth2/token
+MPROFIEL_API_URL=https://api-gw-o.antwerpen.be/astad/mprofiel/v1/api/profiles
 ```
 
-Obtain the client id and client secret by creating a contract on the mprofiel-admin service on [api-store-o.antwerpen.be](https://api-store-o.antwerpen.be).
+* Obtain the client id and client secret by creating a contract on the mprofiel service on [api-store-o.antwerpen.be](https://api-store-o.antwerpen.be).
+
+* Create a service account with read permissions on the mprofiel service.
 
 (Remove the -o extension in the URL's to use the production api.)
 
@@ -75,7 +77,7 @@ The service implements the following protocol:
 
 - GET /path/to/endpoint?search=...
 - search = the text that the user typed on which to match
-- result = JSON-encoded array of [ContactItem](src/mprofiel-admin/types.ts) objects
+- result = JSON-encoded array of [ContactItem](src/mprofiel/types.ts) objects
 
 An [example swagger description](swagger-example.json) is included.
 

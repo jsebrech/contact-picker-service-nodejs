@@ -1,11 +1,11 @@
 import rp = require('request-promise')
-import { ServiceConfig, ContactItem, MprofielAdminResult, MprofielAdminResultItem } from './types';
+import { ServiceConfig, ContactItem, MprofielResult, MprofielResultItem } from './types';
 import { authenticatedOAuth2 } from '../auth';
 
-const mapResultItem = (item: MprofielAdminResultItem) => {
-    return { 
+const mapResultItem = (item: MprofielResultItem) => {
+    return {
         id: item.id,
-        name: item.firstName + ' ' + item.lastName,
+        name: item.fullName,
         firstName: item.firstName,
         lastName: item.lastName,
         userName: item.userName,
@@ -14,15 +14,15 @@ const mapResultItem = (item: MprofielAdminResultItem) => {
         avatarUrl: item.avatarUrl
     };
 }
-const mapResult = (result: MprofielAdminResult) => 
-    result.data.map(mapResultItem).sort(sortByNameFn);
+const mapResult = (result: MprofielResult) =>
+    result._embedded.profiles.map(mapResultItem).sort(sortByNameFn);
 
 const getFirstWord = (str: string) => (str || '').split(' ')[0];
-const sortByNameFn = (a: ContactItem, b: ContactItem) => 
+const sortByNameFn = (a: ContactItem, b: ContactItem) =>
     a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 
 /**
- * Create a function that calls the mprofiel-admin service and finds contacts
+ * Create a function that calls the mprofiel service and finds contacts
  * matching a search string
  */
 export = function createService(config: ServiceConfig): (search: string) => Promise<ContactItem[]> {
@@ -30,7 +30,7 @@ export = function createService(config: ServiceConfig): (search: string) => Prom
         if (!search) return Promise.resolve([]);
 
         // we must query twice, since the API does not support firstName OR lastName searches
-        const searchFirstName = 
+        const searchFirstName =
             rp.get(config.serviceUrl, {
                 auth: { bearer: accessToken },
                 json: true,
@@ -45,7 +45,7 @@ export = function createService(config: ServiceConfig): (search: string) => Prom
                     (item) => item.name.toLowerCase().indexOf(search.toLowerCase()) === 0
                 )
             );
-        const searchLastName = 
+        const searchLastName =
             rp.get(config.serviceUrl, {
                 auth: { bearer: accessToken },
                 json: true,
@@ -57,7 +57,7 @@ export = function createService(config: ServiceConfig): (search: string) => Prom
         return Promise.all([searchFirstName, searchLastName]).then((values) => {
             const [byFirstName, byLastName] = values;
             // try to find an exact match first
-            if (byFirstName.length && 
+            if (byFirstName.length &&
                 (byFirstName[0].name.toLowerCase() === search.toLowerCase())) {
                 return byFirstName;
             }
@@ -65,7 +65,7 @@ export = function createService(config: ServiceConfig): (search: string) => Prom
             const byFirstNameIds: any = {};
             byFirstName.forEach(
                 (item: ContactItem) => byFirstNameIds[item.id] = true);
-            const byLastNameUnique = 
+            const byLastNameUnique =
                 byLastName.filter((item: ContactItem) => !byFirstNameIds[item.id]);
             return byFirstName.concat(byLastNameUnique).sort(sortByNameFn);
         });

@@ -31,13 +31,13 @@ app.get('/api/antwerpenaars', (req, res) => {
     res.send(JSON.stringify(result));
 });
 
-app.get('/api/medewerkers', lib.mprofielAdmin.createController({
+app.get('/api/medewerkers', lib.mprofiel.createController({
     clientId: process.env.OAUTH_CLIENT_ID,
     clientSecret: process.env.OAUTH_CLIENT_SECRET,
-    oauthUrl: process.env.MPROFIEL_ADMIN_OAUTH_URL,
-    serviceUrl: process.env.MPROFIEL_ADMIN_API_URL
+    oauthUrl: process.env.MPROFIEL_OAUTH_URL,
+    serviceUrl: process.env.MPROFIEL_API_URL
 }));
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => 
+app.listen(port, () =>
     console.log('Example app listening on port ' + port + '!'))

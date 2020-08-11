@@ -15,15 +15,35 @@ export interface ContactItem {
     avatarUrl?: string
 }
 
-export interface MprofielAdminResult {
-    success: boolean,
-    data: Array<MprofielAdminResultItem>
+export interface MprofielResult {
+  _embedded: {
+    profiles: Array<MprofielResultItem>
+  },
+  _links: {
+    self: {
+      href: string
+    },
+    first: {
+      href: string
+    },
+    last: {
+      href: string
+    }
+  },
+  _page: {
+    totalPages: number,
+    totalElements: number,
+    number: number,
+    size: number
+  },
 }
 
-export interface MprofielAdminResultItem {
+export interface MprofielResultItem {
     id: string,
     firstName: string,
     lastName: string,
+    nickName: string,
+    fullName: string,
     userName: string,
     domain: string,
     avatarUrl: string,

@@ -1,5 +1,5 @@
-import mprofielAdmin = require('./mprofiel-admin')
+import mprofiel = require('./mprofiel')
 
 export = {
-    mprofielAdmin
+    mprofiel
 }
