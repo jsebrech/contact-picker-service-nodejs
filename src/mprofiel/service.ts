@@ -28,47 +28,15 @@ const sortByNameFn = (a: ContactItem, b: ContactItem) =>
 export = function createService(config: ServiceConfig): (search: string) => Promise<ContactItem[]> {
     const getContacts = (accessToken: string, search: string) => {
         if (!search) return Promise.resolve([]);
-
-        // we must query twice, since the API does not support firstName OR lastName searches
-        const searchFirstName =
+        const searchrequest =
             rp.get(config.serviceUrl, {
                 auth: { bearer: accessToken },
                 json: true,
-                qs: {
-                    firstName: getFirstWord(search)
-                }
-            })
-            .then(mapResult)
-            // filter on whole name matches since we only searched on the first word
-            .then(
-                (items) => items.filter(
-                    (item) => item.name.toLowerCase().indexOf(search.toLowerCase()) === 0
-                )
-            );
-        const searchLastName =
-            rp.get(config.serviceUrl, {
-                auth: { bearer: accessToken },
-                json: true,
-                qs: {
-                    lastName: search
-                }
+                qs: { search }
             })
             .then(mapResult);
-        return Promise.all([searchFirstName, searchLastName]).then((values) => {
-            const [byFirstName, byLastName] = values;
-            // try to find an exact match first
-            if (byFirstName.length &&
-                (byFirstName[0].name.toLowerCase() === search.toLowerCase())) {
-                return byFirstName;
-            }
-            // combine the results, but filter for uniques
-            const byFirstNameIds: any = {};
-            byFirstName.forEach(
-                (item: ContactItem) => byFirstNameIds[item.id] = true);
-            const byLastNameUnique =
-                byLastName.filter((item: ContactItem) => !byFirstNameIds[item.id]);
-            return byFirstName.concat(byLastNameUnique).sort(sortByNameFn);
-        });
+
+        return searchrequest.then((value) => value);
     }
     return authenticatedOAuth2(config, getContacts);
 }
