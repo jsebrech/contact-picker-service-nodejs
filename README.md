@@ -56,7 +56,8 @@ MPROFIEL_API_URL=https://api-gw-o.antwerpen.be/astad/mprofiel/v1/api/profiles
 
 * Obtain the client id and client secret by creating a contract on the mprofiel service on [api-store-o.antwerpen.be](https://api-store-o.antwerpen.be).
 
-* Create a service account with read permissions on the mprofiel service.
+* Create a service account with the correct permissions: request permissions in the User [Management Engine](https://um.antwerpen.be/) (application Digipolis --> MPROFIEL).
+
 
 (Remove the -o extension in the URL's to use the production api.)
 
