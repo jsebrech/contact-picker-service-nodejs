@@ -34,21 +34,16 @@ describe('mprofiel', () => {
             fn();
         });
 
-        it('should query by first and last name', (done) => {
+        it('should query by search param', (done) => {
             let byFirstName = false;
-            let byLastName = true;
             const query = 'foo';
             const createService = proxyquire('../dist/mprofiel/service', {
                 '../auth': { authenticatedOAuth2: oauthPassThrough },
                 'request-promise': {
                     get: (url, config) => {
-                        if (config.qs.firstName) {
-                            expect(config.qs.firstName).toEqual(query);
+                        if (config.qs.search) {
+                            expect(config.qs.search).toEqual(query);
                             byFirstName = true;
-                        }
-                        if (config.qs.lastName) {
-                            expect(config.qs.lastName).toEqual(query);
-                            byLastName = true;
                         }
                         return Promise.resolve(dummyResult);
                     }
@@ -63,7 +58,6 @@ describe('mprofiel', () => {
                 expect(result[1].id).toEqual('1');
                 expect(result[1].name).toEqual('Foo Baz');
                 expect(byFirstName).toBeTruthy();
-                expect(byLastName).toBeTruthy();
                 done();
             });
         });
