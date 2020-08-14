@@ -17,7 +17,6 @@ const mapResultItem = (item: MprofielResultItem) => {
 const mapResult = (result: MprofielResult) =>
     result._embedded.profiles.map(mapResultItem).sort(sortByNameFn);
 
-const getFirstWord = (str: string) => (str || '').split(' ')[0];
 const sortByNameFn = (a: ContactItem, b: ContactItem) =>
     a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 
