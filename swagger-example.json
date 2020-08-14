@@ -19,7 +19,7 @@
     "paths": {
       "/medewerkers": {
         "get": {
-          "summary": "Return the matching contacts from mprofiel-admin",
+          "summary": "Return the matching contacts from mprofiel",
           "description": "Search is performed by first or last name, combining the results.",
           "operationId": "listMedewerkers",
           "produces": [

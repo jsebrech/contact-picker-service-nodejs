@@ -13,13 +13,13 @@ function createAccessTokenFn(): (oauth2: oauth.OAuth2, force?: boolean) => Promi
             return Promise.resolve(accessToken);
         } else {
             return new Promise((resolve, reject) => {
-                oauth2.getOAuthAccessToken(null, {'grant_type': 'client_credentials'}, 
+                oauth2.getOAuthAccessToken(null, {'grant_type': 'client_credentials'},
                     (err, token) => {
                         if (err) {
                             reject(err);
                         } else {
                             accessToken = token;
-                            resolve(token);    
+                            resolve(token);
                         }
                     }
                 );
@@ -38,8 +38,8 @@ export interface OAuthConfig {
  * Perform a request protected by OAuth2, authenticating as necessary.
  */
 export function authenticatedOAuth2<T>(
-    config: OAuthConfig, 
-    request: (accessToken: string, ...args: any[]) => Promise<T>
+    config: OAuthConfig,
+    request: (accessToken: string, ...args: any[]) => any
 ): (...args: any[]) => Promise<T> {
     const {
         clientId,
@@ -59,7 +59,7 @@ export function authenticatedOAuth2<T>(
         null
     );
     // retry behavior from: https://stackoverflow.com/a/46112255/20980
-    return (...args: any[]) => 
+    return (...args: any[]) =>
         getAccessToken(oauth2)
             .then((token) => request(token, ...args))
             .catch((rejection) => {
