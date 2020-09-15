@@ -45,6 +45,7 @@ export interface MprofielResultItem {
     nickName: string,
     fullName: string,
     userName: string,
+    userPrincipalName: string,
     domain: string,
     avatarUrl: string,
     emailWork: string
