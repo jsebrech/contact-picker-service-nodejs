@@ -9,6 +9,7 @@ const mapResultItem = (item: MprofielResultItem) => {
         firstName: item.firstName,
         lastName: item.lastName,
         userName: item.userName,
+        userPrincipalName: item.userPrincipalName,
         email: item.emailWork,
         domain: item.domain,
         avatarUrl: item.avatarUrl
